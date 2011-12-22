@@ -1,15 +1,33 @@
 class Integer
 
+  def self.primes
+    @@primes
+  end
+
   def prime?
-    if @@sieved and self.to_i < @@sieve_max
-      return @@isprime[self.to_i]
+    now = self.to_i
+    if @@sieved and now < @@sieve_max
+      return @@isprime[now]
     end
-    (2..(Math.sqrt(self.to_i).floor)).each do |x|
-        if self.to_i % x == 0
+    ulim = Math.sqrt(now).floor
+    if @@sieved
+      @@primes.each do |x|
+        if x > ulim
+          return true
+        end
+        if now % x == 0
+          return false
+        end
+      end
+      return true
+    else
+      (2..ulim).each do |x|
+        if now % x == 0
             return false
         end
+      end
+      return true
     end
-    return true
   end
 
   @@sieved = false
@@ -18,11 +36,17 @@ class Integer
     @@sieve_max = max
     @@sieved = true
     @@isprime = [false, false] + (2..max).to_a
+    @@primes = []
     (2..Math.sqrt(max)).each do |x|
       if @@isprime[x]
         (2*x..max).step(x).each do |y|
           @@isprime[y] = false
         end
+      end
+    end
+    (0..max).each do |x|
+      if @@isprime[x]
+        @@primes.push(x)
       end
     end
   end
@@ -35,7 +59,25 @@ class Integer
     self.to_s.reverse.to_i == self.to_i
   end
 
-  
+  def factorize
+    num = self.to_i
+    lst = {}
+    @@primes.each do |x|
+      if num == 1
+        break
+      end
+      if num % x == 0
+        cnt = 0
+        found = true
+        while num % x == 0
+          cnt += 1
+          num = num / x
+        end
+        lst[x] = cnt
+      end
+    end
+    lst
+  end
 end
 
 class Comb

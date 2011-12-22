@@ -1,40 +1,51 @@
+require 'utils'
+
 MAX = 1_000_000
 
+Integer.sieve(MAX)
 
-$isprime = [nil, nil] + (2..MAX).to_a
+$primes = []
+$sprimes = []
 
-def sieve()
-  end 
-
-sieve()
-
-$primes = (2..MAX).select do |x| $isprime[x] end
-
-def prime?(x)
-  if x < MAX
-    return $primes[x]
+(0..MAX).each do |x|
+  if x.prime?
+    $primes.push(x)
+    $sprimes.push(x.to_s)
   end
-  index = 0
-  limit = Math.sqrt(x).floor
-  while $primes[index] < limit
-    if x % $primes[index] == 0
-      return False
+end
+
+def ok? lst # test if all combinations of the last prime with the previous one satisfy the condition
+  p2 = $sprimes[lst[-1]]
+  (0...lst.length - 1).each do |i|
+    p1 = $sprimes[lst[i]]
+    if not (p1+p2).to_i.prime? or not (p2+p1).to_i.prime?
+      return false
     end
-    index += 1
   end
-  return True
+  return true
 end
 
-def search_satisfied(now, rest)
+def search_satisfied(now, rest, max)
   if rest == 0
-    puts now.inspect
-    return True
+    puts now.collect { |x| $primes[x] }.inject(:+)
+    return true
   end
-  start = now.empty? 0 : (now[-1] + 1)
+  if now.empty?
+    start = 0
+  else
+    start = now[-1] + 1
+  end
   (start...$primes.length).each do |i|
-    
-
+    if $primes[i] > max
+      return false
+    end
+    if ok?(now + [i])
+      if search_satisfied(now + [i], rest - 1, max)
+        return true
+      end
+    end
+  end
+  return false
 end
-
-search_satisfied([], 5)
-  
+    
+search_satisfied([], 5, 10000)
