@@ -78,6 +78,15 @@ class Integer
     end
     lst
   end
+
+  def phi
+    factors = self.factorize
+    ans = 1
+    factors.each_pair do |prime, pow|
+      ans *= (prime ** (pow) - prime ** (pow - 1)) 
+    end
+    ans
+  end
 end
 
 class Comb
