@@ -1,2 +1,4 @@
 problems
 *.swp
+*.class
+*.out
