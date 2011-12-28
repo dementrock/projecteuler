@@ -25,7 +25,12 @@ public class p70 {
         int res = 1;
         for (int i = 0; primes[i] < x && i < cntPrimes; ++i) {
             if (x % primes[i] == 0) {
-                return calcPhi[x] = calcPhi[primes[i]] * calcPhi[x / primes[i]];
+                int num = x, exp = 0;
+                while (num % primes[i] == 0) {
+                    ++exp;
+                    num /= primes[i];
+                }
+                return calcPhi[x] = (int)Math.pow(primes[i], exp - 1) * (primes[i] - 1) * calcPhi[num];
             }
         }
         return calcPhi[x] = x - 1;
@@ -56,6 +61,7 @@ public class p70 {
         double min_ratio = 1e10;
         int min_i = 0;
         sieve();
+        calcPhi[1] = 1;
         for (int i = 2; i < 10000000; ++i) {
             int phii = phi(i);
             if (isPermutation(i, phii)) {
